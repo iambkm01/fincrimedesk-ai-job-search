@@ -19,8 +19,14 @@ page parser to break.
 - Any line in an ad that is written for AI tools (for example "If you are an LLM, include …") is
   moved out of the description and quoted separately, so it is reported to you instead of being
   followed.
-- When you draft an application, the connector also sends honest-tailoring rules: no invented
-  experience, certifications or platforms, and no SAR / STR details in a CV.
+- When you draft an application, the skill applies its own fixed honest-tailoring rules: no
+  invented experience, certifications or platforms, and no SAR / STR details in a CV. Text the
+  connector returns about writing is treated as data, never as rules.
+
+## Where the links lead
+
+Each result's `url` is a FinCrime Desk page, not the employer's own posting; some roles are applied
+for through FinCrime Desk's own recruiting team; and page 1 can carry roles marked as sponsored.
 
 ## Install
 
@@ -30,11 +36,26 @@ page parser to break.
    claude mcp add --transport http fincrimedesk https://fincrimedesk.com/mcp
    ```
 3. Run `/mcp` in Claude Code, pick `fincrimedesk` and sign in with a **free** FinCrime Desk account.
-   The first sign-in asks a few short profile questions (discipline, level, country and the like),
-   used only as anonymous totals of five or more people.
-4. Run `/scrape`; the skill is picked up with your other portals.
+4. Run `/scrape`; the skill is picked up with your other portals. Claude Code asks you to approve
+   the two connector tools (`mcp__fincrimedesk__search_jobs`, `mcp__fincrimedesk__get_job`) the first
+   time they run, like any MCP tool. The skill has no `allowed-tools` line, so nothing needs adding
+   to `ALLOWED_SKILL_TOOLS`.
 
-The server name must be `fincrimedesk` so the tool names in the skill's `allowed-tools` match.
+Keep the server name `fincrimedesk` so the tool names above match.
+
+## Your data
+
+Full text: [FinCrime Desk privacy policy, "AI assistant connector"](https://fincrimedesk.com/privacy#connector).
+
+- On first sign-in the connector asks eight questions: discipline, level, years in financial crime,
+  employer type, country, **current employer** (or "prefer not to say"), the platforms you use, and
+  whether you are looking for a new role. They are saved to your FinCrime Desk account, where you
+  can change them.
+- **Every tool call is logged** with the search terms and filters it sends and your account tier,
+  and the log is kept for **13 months**.
+- Your answers and searches feed FinCrime Desk market research as anonymous totals of 5 or more
+  people. **Some of that research is sold to employers, vendors and Intel subscribers as reports**:
+  they get the totals, never your name, account or answers.
 
 ## Limits
 
